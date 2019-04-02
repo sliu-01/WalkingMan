@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.Timer;
 
 public class WalkingMan extends JComponent implements ActionListener
@@ -55,8 +58,9 @@ public class WalkingMan extends JComponent implements ActionListener
 				}
 				if(e.getKeyCode() == e.VK_SPACE)
 				{
-					bullets.add(new Ball(getX() + 31, getY() + 15));
-					myFrame.add(new Ball(getX() + 31, getY() + 15));
+					Ball bulletA = new Ball(getX() + getWidth(), getY() + getHeight()/4);
+					bullets.add(bulletA);
+					myFrame.add(bulletA);
 				}
 			}
 
@@ -101,9 +105,10 @@ public class WalkingMan extends JComponent implements ActionListener
 					setDx(-5);
 				}
 				if(e.getKeyCode() == e.VK_SPACE)
-				{
-					bullets.add(new Ball(getX() + 31, getY() + 15));
-					myFrame.add(new Ball(getX() + 31, getY() + 15));
+				{	
+					Ball bulletA = new Ball(getX() + 31, getY() + 15);
+					bullets.add(bulletA);
+					myFrame.add(bulletA);
 				}
 			}
 			
@@ -158,6 +163,21 @@ public class WalkingMan extends JComponent implements ActionListener
 		{
 			this.setLocation(this.getX(), 510);
 		}
+		for (int i = bullets.size(); i >0; i--)
+		{
+			int count = 0;
+			if (bullets.get(bullets.size() - i).getX() < 0)
+			{
+				bullets.get(bullets.size() - i).stop();
+				bullets.get(bullets.size() - i).repaint();
+			}
+			else if (bullets.get(bullets.size() - i).getX() > 200)
+			{
+				bullets.remove(bullets.get(bullets.size() - i));
+				bullets.get(bullets.size() - i).repaint();
+			}
+			System.out.println(bullets.get(bullets.size() - i).getX());
+		}
 	}
 	
 	public static void main(String[] args) 
@@ -168,7 +188,7 @@ public class WalkingMan extends JComponent implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
-		for (Ball bullet : bullets)
+		for(Ball bullet : bullets)
 		{
 			bullet.update();
 			bullet.repaint();
