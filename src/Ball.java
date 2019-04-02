@@ -10,6 +10,7 @@ import javax.swing.Timer;
 public class Ball extends JComponent implements ActionListener
 {
 	private int dx = 8, dy = 0;
+	private static int r = 7;
 	
 	public Ball(int x, int y)
 	{
@@ -20,6 +21,11 @@ public class Ball extends JComponent implements ActionListener
 		t2.start();
 		
 		this.setFocusable(true);
+	}
+	
+	public void stop()
+	{
+		dx = 0;
 	}
 	
 	public void paint(Graphics g)
