@@ -20,21 +20,31 @@ import javax.swing.Timer;
 public class WalkingMan extends JComponent implements ActionListener
 {
 	private ArrayList<Ball> bullets = new ArrayList<>();
-	private Ellipse2D head = new Ellipse2D.Double(10, 0, 10, 10);
-	private Rectangle2D body = new Rectangle2D.Double(11, 10, 8, 40);
-	private Polygon leftArm = new Polygon(new int[] {0, 11, 6}, new int[] {40, 11, 40}, 3), 
-			rightArm = new Polygon(new int[] {30, 19, 24}, new int[] {40, 11, 40}, 3);
+	private Ellipse2D head;
+	private Rectangle2D body;
+	private Polygon leftArm, rightArm;
 	private int dx = 0, dy = 0;
+	private int xLocation = 0;
+	private int yLocation = 0;
+	
+	private int manWidth = 31;
+	private int manHeight = 51;
+	
+	JFrame myFrame = new JFrame();
 	
 	public WalkingMan(int x, int y)
 	{
-		JFrame myFrame = new JFrame();
 		myFrame.setBounds(100, 100, 900, 600);
 		
-		this.setSize(51, 31);
-		this.setLocation(x,y);
+		this.setSize(manWidth, manHeight);
+		this.setLocation(x, y);
 		
 		myFrame.add(this);
+		
+		head = new Ellipse2D.Double(10 + this.getX(), 0 + this.getY(), 10, 10);
+		body = new Rectangle2D.Double(11 + this.getX(), 10 + this.getY(), 8, 40);
+		leftArm = new Polygon(new int[] {0 + this.getX(), 11 + this.getX(), 6 + this.getX()}, new int[] {40 + this.getY(), 11 + this.getY(), 40 + this.getY()}, 3);
+		rightArm = new Polygon(new int[] {30 + this.getX(), 19 + this.getX(), 24 + this.getX()}, new int[] {40 + this.getY(), 11 + this.getY(), 40 + this.getY()}, 3);
 		
 		this.addKeyListener(new KeyListener()
 		{
@@ -48,7 +58,7 @@ public class WalkingMan extends JComponent implements ActionListener
 				{
 					setDy(10);
 				}
-				else if (e.getKeyCode() == e.VK_RIGHT)
+				if (e.getKeyCode() == e.VK_RIGHT)
 				{
 					setDx(10);
 				}
@@ -58,9 +68,9 @@ public class WalkingMan extends JComponent implements ActionListener
 				}
 				if(e.getKeyCode() == e.VK_SPACE)
 				{
-					Ball bulletA = new Ball(getX() + getWidth(), getY() + getHeight()/4);
-					bullets.add(bulletA);
+					Ball bulletA = new Ball(xLocation + manWidth, yLocation + manHeight/4);
 					myFrame.add(bulletA);
+					bullets.add(bulletA);
 				}
 			}
 
@@ -88,28 +98,7 @@ public class WalkingMan extends JComponent implements ActionListener
 			@Override
 			public void keyTyped(KeyEvent e) 
 			{
-				if(e.getKeyCode() == e.VK_UP)
-				{
-					setDy(-5);
-				}
-				else if(e.getKeyCode() == e.VK_DOWN)
-				{
-					setDy(5);
-				}
-				else if(e.getKeyCode() == e.VK_RIGHT)
-				{
-					setDx(5);
-				}
-				else if(e.getKeyCode() == e.VK_LEFT)
-				{
-					setDx(-5);
-				}
-				if(e.getKeyCode() == e.VK_SPACE)
-				{	
-					Ball bulletA = new Ball(getX() + 31, getY() + 15);
-					bullets.add(bulletA);
-					myFrame.add(bulletA);
-				}
+				
 			}
 			
 		});
@@ -118,10 +107,9 @@ public class WalkingMan extends JComponent implements ActionListener
 		t1.start();
 		
 		this.setFocusable(true);
-				
+	
 		myFrame.setDefaultCloseOperation(myFrame.EXIT_ON_CLOSE);
 		myFrame.setVisible(true);
-		
 	}
 	
 	public void paint(Graphics g)
@@ -147,53 +135,61 @@ public class WalkingMan extends JComponent implements ActionListener
 	public void update()
 	{
 		this.setLocation(this.getX() + dx, this.getY() + dy);
-		if((this.getX() <= 0 && dx < 0))
+		if ((this.getX() < 0) && (dx < 0))
 		{
-			this.setLocation(0, this.getY());
+			this.setDx(0);
+			xLocation = 0;
 		}
-		if((this.getX() >= 854 && dx > 0))
+		else if (((this.getX() + manWidth + 18) >= myFrame.getWidth()) && (dx > 0))
 		{
-			this.setLocation(854, this.getY());
+			this.setDx(0);
+			xLocation = myFrame.getWidth() - manWidth - 18;
 		}
-		if((this.getY() <= 0 && dy < 0))
+		else
 		{
-			this.setLocation(this.getX(), 0);
+			xLocation += dx;
 		}
-		if((this.getY() >= 510 && dy > 0))
+		
+		if ((this.getY() < 0) && (dy < 0))
 		{
-			this.setLocation(this.getX(), 510);
+			this.setDy(0);
+			yLocation = 0;
 		}
-		for (int i = bullets.size(); i >0; i--)
+		else if (((this.getY() + manHeight + 46) >= myFrame.getHeight()) && (dy > 0))
 		{
-			int count = 0;
-			if (bullets.get(bullets.size() - i).getX() < 0)
+			this.setDy(0);
+			System.out.println(this.getY());
+			System.out.println(manHeight);
+			yLocation = (myFrame.getHeight() - manHeight - 46);
+		}
+		else
+		{
+			yLocation += dy;
+		}
+		for(int i = bullets.size(); i > 0; i--)
+		{
+			if(bullets.get(i-1).getX() > myFrame.getWidth())
 			{
-				bullets.get(bullets.size() - i).stop();
-				bullets.get(bullets.size() - i).repaint();
+				myFrame.remove(bullets.get(i-1));
+				bullets.remove(i-1);
 			}
-			else if (bullets.get(bullets.size() - i).getX() > 200)
-			{
-				bullets.remove(bullets.get(bullets.size() - i));
-				bullets.get(bullets.size() - i).repaint();
-			}
-			System.out.println(bullets.get(bullets.size() - i).getX());
 		}
 	}
 	
 	public static void main(String[] args) 
 	{
-		new WalkingMan(100, 100);
+		new WalkingMan(0, 0);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
+		this.update();
+		this.setLocation(xLocation, yLocation);
+		this.repaint();
 		for(Ball bullet : bullets)
 		{
 			bullet.update();
-			bullet.repaint();
 		}
-		this.update();
-		this.repaint();
 	}
 }

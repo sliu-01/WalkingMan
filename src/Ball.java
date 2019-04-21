@@ -23,11 +23,6 @@ public class Ball extends JComponent implements ActionListener
 		this.setFocusable(true);
 	}
 	
-	public void stop()
-	{
-		dx = 0;
-	}
-	
 	public void paint(Graphics g)
 	{
 		Graphics2D g2d = (Graphics2D) g;
