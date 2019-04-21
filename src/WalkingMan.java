@@ -48,6 +48,7 @@ public class WalkingMan extends JComponent implements ActionListener
 		
 		this.addKeyListener(new KeyListener()
 		{
+			@Override
 			public void keyPressed(KeyEvent e) 
 			{
 				if(e.getKeyCode() == e.VK_UP)
@@ -58,7 +59,7 @@ public class WalkingMan extends JComponent implements ActionListener
 				{
 					setDy(10);
 				}
-				if (e.getKeyCode() == e.VK_RIGHT)
+				else if (e.getKeyCode() == e.VK_RIGHT)
 				{
 					setDx(10);
 				}
@@ -66,7 +67,7 @@ public class WalkingMan extends JComponent implements ActionListener
 				{
 					setDx(-10);
 				}
-				if(e.getKeyCode() == e.VK_SPACE)
+				else if(e.getKeyCode() == e.VK_SPACE)
 				{
 					Ball bulletA = new Ball(xLocation + manWidth, yLocation + manHeight/4);
 					myFrame.add(bulletA);
@@ -140,10 +141,10 @@ public class WalkingMan extends JComponent implements ActionListener
 			this.setDx(0);
 			xLocation = 0;
 		}
-		else if (((this.getX() + manWidth + 18) >= myFrame.getWidth()) && (dx > 0))
+		else if (((this.getX() + manWidth) >= myFrame.getWidth()) && (dx > 0))
 		{
 			this.setDx(0);
-			xLocation = myFrame.getWidth() - manWidth - 18;
+			xLocation = myFrame.getWidth() - manWidth;
 		}
 		else
 		{
@@ -155,12 +156,10 @@ public class WalkingMan extends JComponent implements ActionListener
 			this.setDy(0);
 			yLocation = 0;
 		}
-		else if (((this.getY() + manHeight + 46) >= myFrame.getHeight()) && (dy > 0))
+		else if (((this.getY() + manHeight) >= myFrame.getHeight()) && (dy > 0))
 		{
 			this.setDy(0);
-			System.out.println(this.getY());
-			System.out.println(manHeight);
-			yLocation = (myFrame.getHeight() - manHeight - 46);
+			yLocation = (myFrame.getHeight() - manHeight);
 		}
 		else
 		{
